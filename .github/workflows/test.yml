@@ -45,9 +45,9 @@ jobs:
     - name: build with gcc win
       if: ${{ env.isWindows == 'true' }}
       env:
-        cc: ${{ runner.temp }}/llvm/clang
-        cxx: ${{ runner.temp }}/llvm/clang++
-      run: cd cpp && cmake -G "MinGW Makefiles" . && cmake --build . --target LoaderNative
+        cc: ${{ runner.temp }}/llvm/clang.exe
+        cxx: ${{ runner.temp }}/llvm/clang++.exe
+      run: cd cpp && cmake . && cmake --build . --target LoaderNative
     - name: Set up JDK 15
       uses: actions/setup-java@v2
       with:
