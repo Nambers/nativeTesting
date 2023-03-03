@@ -1,0 +1,1 @@
+void test(const char*);
