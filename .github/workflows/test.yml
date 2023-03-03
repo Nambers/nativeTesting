@@ -97,8 +97,8 @@ jobs:
       with:
         path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
         oldString: libA.a
+        newString: libA.a
         newStringWin: libA.lib
-        newStringLinux: libA.a
         showFileContent: true
     - name: run native
       run:  cd ./kotlin/ && ./gradlew :runDebugExecutableNative --warning-mode all --info --stacktrace
