@@ -27,9 +27,9 @@ jobs:
       with:
         update: true
         install: >-
-          base-level
+          base-devel
           mingw-w64-x86_64-llvm
-          mingw-w64-gcc
+          mingw-w64-x86_64-gcc
         location: ${{ runner.temp }}
     - name: build with gcc win
       env:
