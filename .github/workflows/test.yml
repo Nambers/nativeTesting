@@ -81,7 +81,7 @@ jobs:
       with:
         path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
         oldString: GITHUB_WORKSPACE
-        newString: ${{ github.workspace }}/cpp
+        newString: ${{ github.workspace }}/cpp/Debug
         showFileContent: true
         escapeBackslash: true
     - name: replace header path of def file
@@ -92,6 +92,6 @@ jobs:
         newString: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop
         showFileContent: true
         escapeBackslash: true
-    - name: run native
-      run:  cd ./kotlin/ && ./gradlew :runDebugExecutableNative --warning-mode all --info --stacktrace
+    # - name: run native
+    #   run:  cd ./kotlin/ && ./gradlew :runDebugExecutableNative --warning-mode all --info --stacktrace
     
