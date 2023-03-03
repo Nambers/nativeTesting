@@ -7,47 +7,32 @@ on:
 jobs:
   test:
     name: "build test"
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - windows-latest
-          # - ubuntu-20.04
-        include:
-          - os: windows-latest
-            targetName: mingwX64
-          # - os: ubuntu-20.04
-          #   targetName: linuxX64
-    env:
-      isWindows: ${{ startsWith(matrix.os, 'windows') }}
-      isUbuntu: ${{ startsWith(matrix.os, 'ubuntu') }}
+    runs-on: windows-latest
     steps:
     - name: checkout
       uses: actions/checkout@v2
-    - name: Cache LLVM and Clang
-      id: cache-llvm
-      uses: actions/cache@v2
+    # - name: Cache LLVM and Clang
+    #   id: cache-llvm
+    #   uses: actions/cache@v2
+    #   with:
+    #     path: ${{ runner.temp }}/llvm
+    #     key: llvm-15.0
+    # - name: Install LLVM and Clang
+    #   uses: KyleMayes/install-llvm-action@v1
+    #   with:
+    #     version: "15.0"
+    #     directory: ${{ runner.temp }}/llvm
+    #     cached: ${{ steps.cache-llvm.outputs.cache-hit }}
+    - uses: msys2/setup-msys2@v2
       with:
-        path: ${{ runner.temp }}/llvm
-        key: llvm-15.0
-    - name: Install LLVM and Clang
-      uses: KyleMayes/install-llvm-action@v1
-      with:
-        version: "15.0"
-        directory: ${{ runner.temp }}/llvm
-        cached: ${{ steps.cache-llvm.outputs.cache-hit }}
-    - name: build with gcc ubuntu
-      if: ${{ env.isUbuntu == 'true' }}
-      env:
-        cc: ${{ runner.temp }}/llvm/clang
-        cxx: ${{ runner.temp }}/llvm/clang++
-      run: cd cpp && cmake . && make LoaderNative
+        update: true
+        install: >-
+          mingw-w64-x86_64-llvm
+        location: ${{ runner.temp }}
     - name: build with gcc win
-      if: ${{ env.isWindows == 'true' }}
       env:
-        cc: ${{ runner.temp }}\llvm\bin\gcc.exe
-        cxx: ${{ runner.temp }}\llvm\bin\g++.exe
+        cc: ${{ runner.temp }}\mingw64\bin\gcc.exe
+        cxx: ${{ runner.temp }}\mingw64\bin\g++.exe
       run: cd cpp && cmake -G "Ninja Multi-Config" . && cmake --build . --target LoaderNative
     - name: Set up JDK 15
       uses: actions/setup-java@v2
@@ -60,20 +45,16 @@ jobs:
       with:
         cache-read-only: ${{ github.ref != 'refs/heads/main' }}
     - name: Setup Memory Environment on Windows
-      if: ${{ env.isWindows == 'true' }}
       run: >
         wmic pagefileset where name="D:\\pagefile.sys" set InitialSize=1024,MaximumSize=9216
       shell: cmd
       continue-on-error: true
-    - name: chmod
-      if: ${{ env.isUbuntu == 'true' }}
-      run: chmod -R 777 *
     - name: replace llvm
       uses: Nambers/ReplaceStringInFile@v1.3
       with:
         path: ${{ github.workspace }}/kotlin/build.gradle.kts
         oldString: LLVM_REPLACE_FOR_GITHUB_WORKFLOW
-        newString: ${{ runner.temp }}\llvm
+        newString: ${{ runner.temp }}\mingw64
         showFileContent: true
         escapeBackslash: true
     - name: replace lib path of def file
@@ -81,7 +62,7 @@ jobs:
       with:
         path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
         oldString: GITHUB_WORKSPACE
-        newString: ${{ github.workspace }}/cpp/Debug
+        newString: ${{ github.workspace }}/cpp
         showFileContent: true
         escapeBackslash: true
     - name: replace header path of def file
@@ -92,14 +73,14 @@ jobs:
         newString: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop
         showFileContent: true
         escapeBackslash: true
-    - name: replace header path of def file
-      uses: Nambers/ReplaceStringInFile@v1.3
-      with:
-        path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
-        oldString: libA.a
-        newString: libA.a
-        newStringWin: libA.lib
-        showFileContent: true
+    # - name: replace header path of def file
+    #   uses: Nambers/ReplaceStringInFile@v1.3
+    #   with:
+    #     path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
+    #     oldString: libA.a
+    #     newString: libA.a
+    #     newStringWin: libA.lib
+    #     showFileContent: true
     - name: run native
       run:  cd ./kotlin/ && ./gradlew :runDebugExecutableNative --warning-mode all --info --stacktrace
     
