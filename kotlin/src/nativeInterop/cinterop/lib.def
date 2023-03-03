@@ -1,3 +1,4 @@
-linkerOpts  = -L F:/git/nativeTesting/cpp/ \
-		  -L GITHUB_WORKSPACE \
-              -l A
+libraryPaths   = F:/git/nativeTesting/cpp/ GITHUB_WORKSPACE
+compilerOpts = -I F:/git/nativeTesting/kotlin/src/nativeInterop/cinterop
+headers = lib.h
+staticLibraries = libA.a

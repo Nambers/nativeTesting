@@ -84,8 +84,6 @@ jobs:
         newString: ${{ github.workspace }}/cpp
         showFileContent: true
         escapeBackslash: true
-    - name: compile native
-      run:  cd ./kotlin/ && ./gradlew :compileKotlinNative --warning-mode all --info --stacktrace
-    - name: link native
-      run:  cd ./kotlin/ && ./gradlew :linkDebugExecutableNative --warning-mode all --info --stacktrace
+    - name: run native
+      run:  cd ./kotlin/ && ./gradlew :runDebugExecutableNative --warning-mode all --info --stacktrace
     

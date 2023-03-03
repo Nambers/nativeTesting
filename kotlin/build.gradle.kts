@@ -29,10 +29,7 @@ kotlin {
     nativeTarget.apply {
         compilations.all {
             cinterops {
-                val lib by creating {
-                    headers(project.file("src/nativeInterop/lib.h"))
-                    packageName("lib.lib.lib")
-                }
+                this.create("lib")
             }
         }
         binaries {
