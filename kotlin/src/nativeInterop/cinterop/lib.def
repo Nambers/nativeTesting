@@ -1,4 +1,4 @@
 libraryPaths   = F:/git/nativeTesting/cpp/ GITHUB_WORKSPACE
-compilerOpts = -I F:/git/nativeTesting/kotlin/src/nativeInterop/cinterop
+compilerOpts = -I F:/git/nativeTesting/kotlin/src/nativeInterop/cinterop -I GITHUB_KTHEADER
 headers = lib.h
 staticLibraries = libA.a

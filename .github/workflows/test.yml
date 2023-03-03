@@ -72,7 +72,7 @@ jobs:
       with:
         path: ${{ github.workspace }}/kotlin/build.gradle.kts
         oldString: LLVM_REPLACE_FOR_GITHUB_WORKFLOW
-        newString: ${{ runner.temp }}\\llvm
+        newString: ${{ runner.temp }}\llvm
         showFileContent: true
         escapeBackslash: true
     - name: replace lib path of def file
@@ -82,6 +82,15 @@ jobs:
         path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
         oldString: GITHUB_WORKSPACE
         newString: ${{ github.workspace }}/cpp
+        showFileContent: true
+        escapeBackslash: true
+    - name: replace header path of def file
+      if: ${{ env.isUbuntu == 'true' }}
+      uses: Nambers/ReplaceStringInFile@v1.3
+      with:
+        path: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop/lib.def
+        oldString: GITHUB_KTHEADER
+        newString: ${{ github.workspace }}/kotlin/src/nativeInterop/cinterop
         showFileContent: true
         escapeBackslash: true
     - name: run native
